@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glospot — Properties</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" />
+</head>
+<body data-page="Properties">
+
+  <div id="nav-placeholder"></div>
+
+  <!-- ── Hero + mini search ── -->
+  <div class="page-hero">
+    <h1>Properties</h1>
+    <p id="hero-sub">Showing all available hotels and apartments</p>
+    <div class="mini-search">
+      <input class="form-control" type="text" id="miniSearch" placeholder="Search by name or location…" oninput="applyFilters()" />
+      <select class="form-control" id="typeQuick" onchange="applyFilters()" style="max-width:160px;">
+        <option value="">All types</option>
+        <option value="Hotel">Hotels only</option>
+        <option value="Apartment">Apartments only</option>
+      </select>
+      <button class="btn btn-gold btn-sm" onclick="applyFilters()">Search</button>
+    </div>
+  </div>
+
+  <div class="props-layout">
+
+    <!-- ── Filters sidebar ── -->
+    <aside class="filters-panel">
+      <div class="filter-card" style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:14px;font-weight:500;color:var(--navy);">Filters</span>
+        <button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear all</button>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-title">Property Type</div>
+        <div class="filter-group"><label><input type="checkbox" id="chk-hotel"     value="Hotel"     checked onchange="applyFilters()"> Hotels</label></div>
+        <div class="filter-group"><label><input type="checkbox" id="chk-apartment" value="Apartment" checked onchange="applyFilters()"> Apartments</label></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-title">Max price per night</div>
+        <input type="range" min="0" max="500" value="500" id="priceRange" oninput="updatePrice(this.value)" style="margin:10px 0 4px;" />
+        <div class="price-labels"><span>€0</span><span id="priceVal">All prices</span></div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-title">Star Rating</div>
+        <div class="star-filter-row">
+          <button class="star-btn active" onclick="setStarFilter(0, this)">Any</button>
+          <button class="star-btn" onclick="setStarFilter(3, this)">3★+</button>
+          <button class="star-btn" onclick="setStarFilter(4, this)">4★+</button>
+          <button class="star-btn" onclick="setStarFilter(5, this)">5★</button>
+        </div>
+      </div>
+
+      <div class="filter-card">
+        <div class="filter-title">Currency</div>
+        <select class="form-control" onchange="setCurrency(this.value)">
+          <option value="EUR">EUR (€) — Euro</option>
+          <option value="USD">USD ($) — US Dollar</option>
+          <option value="GBP">GBP (£) — British Pound</option>
+          <option value="ALL">ALL (L) — Albanian Lek</option>
+        </select>
+      </div>
+    </aside>
+
+    <!-- ── Listings ── -->
+    <div>
+      <div class="results-header">
+        <span class="results-count" id="resultCount">Loading…</span>
+        <div class="sort-row">
+          Sort by:
+          <select class="form-control" onchange="sortProps(this.value)">
+            <option value="recommended">Recommended</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+      </div>
+      <div class="prop-list" id="propList"></div>
+    </div>
+  </div>
+
+  <!-- ── Booking Modal ── -->
+  <div class="modal-overlay" id="bookingModal" onclick="handleModalClick(event)">
+    <div class="modal">
+      <h2 id="modalTitle">Reserve your stay</h2>
+      <div class="modal-grid">
+        <div class="form-group"><label>Check-in</label><input type="date" class="form-control" id="modalCheckin"></div>
+        <div class="form-group"><label>Check-out</label><input type="date" class="form-control" id="modalCheckout"></div>
+        <div class="form-group"><label>Guests</label>
+          <select class="form-control"><option>1</option><option selected>2</option><option>3</option><option>4+</option></select>
+        </div>
+        <div class="form-group"><label>Rooms</label>
+          <select class="form-control"><option selected>1</option><option>2</option></select>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:500;">Payment option:</div>
+      <div style="display:flex;gap:12px;margin-bottom:16px;">
+        <button class="pay-opt selected" onclick="selectPay(this)">💳 Pay now online</button>
+        <button class="pay-opt" onclick="selectPay(this)">🏨 Pay at hotel</button>
+      </div>
+      <div class="policy-note">✅ Free cancellation up to 48h before check-in. No hidden fees.</div>
+      <div class="modal-footer">
+        <button class="btn btn-gold" style="flex:1" onclick="confirmBooking()">Confirm Reservation</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    var PROPERTIES = [
+      { id:'p1', name:'Riviera Palace Hotel',   loc:'Sarandë, Albania',     type:'Hotel',     stars:5, price:85,  emoji:'🏖️', bg:'linear-gradient(135deg,#87ceeb,#f7d794)', amenities:['Pool','WiFi','Breakfast','Parking'], payLater:true  },
+      { id:'p2', name:'Blloku Luxury Flat',     loc:'Tirana, Albania',      type:'Apartment', stars:4, price:55,  emoji:'🏙️', bg:'linear-gradient(135deg,#667eea,#764ba2)', amenities:['WiFi','Kitchen','AC','Gym'],         payLater:false },
+      { id:'p3', name:'Valbona Alpine Resort',  loc:'Valbonë, Albania',     type:'Hotel',     stars:5, price:110, emoji:'🏔️', bg:'linear-gradient(135deg,#4facfe,#00c6fb)', amenities:['Restaurant','Spa','Hiking','WiFi'],  payLater:true  },
+      { id:'p4', name:'Ksamil Seaview Villa',   loc:'Ksamil, Albania',      type:'Apartment', stars:5, price:145, emoji:'🌊', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', amenities:['Sea View','Pool','BBQ','WiFi'],      payLater:true  },
+      { id:'p5', name:'Berat Stone Guesthouse', loc:'Berat, Albania',       type:'Hotel',     stars:3, price:45,  emoji:'🏛️', bg:'linear-gradient(135deg,#f7971e,#ffd200)', amenities:['WiFi','Breakfast','City View'],      payLater:false },
+      { id:'p6', name:'Shkodër Lake Retreat',   loc:'Shkodër, Albania',     type:'Hotel',     stars:4, price:70,  emoji:'🌅', bg:'linear-gradient(135deg,#f093fb,#f5576c)', amenities:['Lake View','WiFi','Restaurant'],     payLater:true  },
+      { id:'p7', name:'Old Bazaar Suite',       loc:'Berat, Albania',       type:'Apartment', stars:5, price:65,  emoji:'🏰', bg:'linear-gradient(135deg,#f7971e,#c54800)', amenities:['Historic','WiFi','Breakfast'],       payLater:true  },
+      { id:'p8', name:'Vlorë Bay View Rooms',   loc:'Vlorë, Albania',       type:'Hotel',     stars:3, price:45,  emoji:'⛵', bg:'linear-gradient(135deg,#0575e6,#021b79)', amenities:['Bay View','WiFi','Bar'],             payLater:false },
+    ];
+
+    var priceMax   = 500;
+    var minStars   = 0;
+    var sortMethod = 'recommended';
+
+    /* ── Render ── */
+    function renderProps(list) {
+      var countEl = document.getElementById('resultCount');
+      var listEl  = document.getElementById('propList');
+      if (!listEl) return;
+      if (countEl) countEl.textContent = list.length + ' propert' + (list.length === 1 ? 'y' : 'ies') + ' found';
+      if (!list.length) {
+        listEl.innerHTML = '<div class="no-results"><div style="font-size:40px">🔍</div><p>No properties match your filters. Try clearing some.</p></div>';
+        return;
+      }
+      listEl.innerHTML = list.map(function(p) {
+        var name = p.name.replace(/'/g, '&#39;');
+        return '<div class="prop-row" onclick="openModal(\'' + p.id + '\',\'' + name + '\')">' +
+          '<div class="prop-row-img" style="background:' + p.bg + '">' +
+            '<button class="fav-btn" data-fav="' + p.id + '" onclick="event.stopPropagation();toggleFavourite(\'' + p.id + '\',\'' + name + '\')">♡</button>' +
+            p.emoji +
+          '</div>' +
+          '<div class="prop-row-body">' +
+            '<div>' +
+              '<div class="prop-meta-row">' +
+                '<span class="badge badge-navy">' + p.type + '</span>' +
+                '<span class="stars" style="font-size:13px;">' + '★'.repeat(p.stars) + '</span>' +
+              '</div>' +
+              '<div class="prop-row-title">' + p.name + '</div>' +
+              '<div class="prop-row-loc">📍 ' + p.loc + '</div>' +
+            '</div>' +
+            '<div class="amenities">' + p.amenities.map(function(a){ return '<span class="amenity-tag">' + a + '</span>'; }).join('') + '</div>' +
+          '</div>' +
+          '<div class="prop-row-side">' +
+            '<div>' +
+              '<div class="price-big"><span data-price="' + p.price + '">€' + p.price + '</span><small>/ night</small></div>' +
+              (p.payLater ? '<div class="pay-later-badge">Pay at hotel ✓</div>' : '') +
+            '</div>' +
+            '<button class="btn btn-gold btn-sm" onclick="event.stopPropagation();openModal(\'' + p.id + '\',\'' + name + '\')">Book now</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      initFavButtons();
+    }
+
+    /* ── Filter & sort ── */
+    function getFiltered() {
+      var types = [];
+      var quick = document.getElementById('typeQuick').value;
+      if (quick) {
+        types = [quick];
+      } else {
+        if (document.getElementById('chk-hotel').checked)     types.push('Hotel');
+        if (document.getElementById('chk-apartment').checked) types.push('Apartment');
+      }
+      var q = (document.getElementById('miniSearch').value || '').toLowerCase().trim();
+      var urlQ = new URLSearchParams(window.location.search).get('q') || '';
+      if (!q && urlQ) q = urlQ.toLowerCase();
+
+      return PROPERTIES.filter(function(p) {
+        if (types.length && types.indexOf(p.type) === -1) return false;
+        if (p.price > priceMax) return false;
+        if (p.stars < minStars) return false;
+        if (q && p.name.toLowerCase().indexOf(q) === -1 && p.loc.toLowerCase().indexOf(q) === -1) return false;
+        return true;
+      });
+    }
+
+    function sorted(list) {
+      var copy = list.slice();
+      if (sortMethod === 'price-asc')  copy.sort(function(a,b){ return a.price - b.price; });
+      if (sortMethod === 'price-desc') copy.sort(function(a,b){ return b.price - a.price; });
+      if (sortMethod === 'rating')     copy.sort(function(a,b){ return b.stars - a.stars; });
+      return copy;
+    }
+
+    function applyFilters() { renderProps(sorted(getFiltered())); }
+    function sortProps(m)   { sortMethod = m; applyFilters(); }
+
+    function updatePrice(val) {
+      priceMax = parseInt(val);
+      document.getElementById('priceVal').textContent = priceMax >= 500 ? 'All prices' : 'Up to €' + priceMax;
+      applyFilters();
+    }
+
+    function setStarFilter(n, btn) {
+      minStars = n;
+      document.querySelectorAll('.star-btn').forEach(function(b){ b.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+      applyFilters();
+    }
+
+    function clearFilters() {
+      document.getElementById('chk-hotel').checked     = true;
+      document.getElementById('chk-apartment').checked = true;
+      document.getElementById('priceRange').value = 500;
+      document.getElementById('priceVal').textContent  = 'All prices';
+      document.getElementById('miniSearch').value = '';
+      document.getElementById('typeQuick').value  = '';
+      document.querySelectorAll('.star-btn').forEach(function(b, i){ b.classList.toggle('active', i === 0); });
+      priceMax = 500; minStars = 0; sortMethod = 'recommended';
+      renderProps(PROPERTIES);
+    }
+
+    /* ── Modal ── */
+    function openModal(id, name) {
+      document.getElementById('modalTitle').textContent = 'Reserve — ' + name;
+      var d1 = new Date(); d1.setDate(d1.getDate() + 1);
+      var d2 = new Date(); d2.setDate(d2.getDate() + 4);
+      var fmt = function(d){ return d.toISOString().split('T')[0]; };
+      document.getElementById('modalCheckin').value  = fmt(d1);
+      document.getElementById('modalCheckout').value = fmt(d2);
+      document.getElementById('modalCheckin').min    = fmt(new Date());
+      document.getElementById('bookingModal').classList.add('open');
+    }
+    function closeModal() { document.getElementById('bookingModal').classList.remove('open'); }
+    function handleModalClick(e) { if (e.target.id === 'bookingModal') closeModal(); }
+    function selectPay(el) {
+      document.querySelectorAll('.pay-opt').forEach(function(b){ b.classList.remove('selected'); });
+      el.classList.add('selected');
+    }
+    function confirmBooking() {
+      closeModal();
+      showToast('Booking confirmed! Check your account for details.', 'success');
+    }
+
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded', function() {
+      var q = new URLSearchParams(window.location.search).get('q') || '';
+      if (q) {
+        var sub = document.getElementById('hero-sub');
+        if (sub) sub.textContent = 'Showing results for "' + q + '"';
+        var mini = document.getElementById('miniSearch');
+        if (mini) mini.value = q;
+      }
+      applyFilters();
+    });
+  </script>
+</body>
+</html>
