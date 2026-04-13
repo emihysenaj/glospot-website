@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glospot — Find Your Perfect Stay</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" />
+</head>
+<body data-page="Home">
+
+  <div id="nav-placeholder"></div>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">Hotels &amp; Apartments — Albania &amp; Beyond</div>
+      <h1>Find your perfect<br><em>stay</em> in seconds</h1>
+      <p class="hero-sub">Search thousands of hotels and apartments. Instant booking, flexible cancellation, real guest reviews.</p>
+
+      <div class="search-card">
+        <div class="search-grid">
+          <div class="form-group">
+            <label>Destination</label>
+            <input class="form-control" type="text" id="dest" placeholder="City, area or property…" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label>Check-in</label>
+            <input class="form-control" type="date" id="checkin" />
+          </div>
+          <div class="form-group">
+            <label>Check-out</label>
+            <input class="form-control" type="date" id="checkout" />
+          </div>
+          <div class="form-group">
+            <label>Guests</label>
+            <select class="form-control" id="guests">
+              <option>1</option><option selected>2</option><option>3</option><option>4+</option>
+            </select>
+          </div>
+          <button class="btn btn-gold" onclick="doSearch()" style="align-self:end;height:42px;">🔍 Search</button>
+        </div>
+        <div class="sug-row">
+          <span class="sug-label">Popular:</span>
+          <span class="sug-chip" onclick="setSug('Tirana')">📍 Tirana</span>
+          <span class="sug-chip" onclick="setSug('Sarandë')">📍 Sarandë</span>
+          <span class="sug-chip" onclick="setSug('Vlorë')">📍 Vlorë</span>
+          <span class="sug-chip" onclick="setSug('Berat')">📍 Berat</span>
+          <span class="sug-chip" onclick="setSug('Shkodër')">📍 Shkodër</span>
+        </div>
+      </div>
+
+      <svg class="hero-wave" viewBox="0 0 1200 52" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,52 C300,0 900,52 1200,0 L1200,52 Z" fill="#FAF8F4"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ── Featured Properties ── -->
+  <section class="section">
+    <div class="container">
+      <div class="sec-title">Featured Properties</div>
+      <div class="sec-sub">Handpicked hotels and apartments — verified &amp; highly rated</div>
+      <div class="props-grid">
+
+        <div class="prop-card" onclick="navigate('properties.html')">
+          <div class="prop-thumb thumb-beach">
+            <span class="prop-type badge badge-navy">Hotel</span>
+            <button class="fav-btn" data-fav="p1" onclick="event.stopPropagation();toggleFavourite('p1','Riviera Palace Hotel')">♡</button>
+            🏖️
+          </div>
+          <div class="prop-body">
+            <div class="prop-name">Riviera Palace Hotel</div>
+            <div class="prop-loc">📍 Sarandë, Albania</div>
+            <div class="prop-foot">
+              <div><span class="stars">★★★★★</span><span class="rating-count">(128)</span></div>
+              <div class="prop-price"><span data-price="85">€85</span> <small>/ night</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prop-card" onclick="navigate('properties.html')">
+          <div class="prop-thumb thumb-city">
+            <span class="prop-type badge badge-navy">Apartment</span>
+            <button class="fav-btn" data-fav="p2" onclick="event.stopPropagation();toggleFavourite('p2','Blloku Luxury Flat')">♡</button>
+            🏙️
+          </div>
+          <div class="prop-body">
+            <div class="prop-name">Blloku Luxury Flat</div>
+            <div class="prop-loc">📍 Tirana, Albania</div>
+            <div class="prop-foot">
+              <div><span class="stars">★★★★</span><span class="rating-count">(74)</span></div>
+              <div class="prop-price"><span data-price="55">€55</span> <small>/ night</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prop-card" onclick="navigate('properties.html')">
+          <div class="prop-thumb thumb-mountain">
+            <span class="prop-type badge badge-navy">Hotel</span>
+            <button class="fav-btn" data-fav="p3" onclick="event.stopPropagation();toggleFavourite('p3','Valbona Alpine Resort')">♡</button>
+            🏔️
+          </div>
+          <div class="prop-body">
+            <div class="prop-name">Valbona Alpine Resort</div>
+            <div class="prop-loc">📍 Valbonë, Albania</div>
+            <div class="prop-foot">
+              <div><span class="stars">★★★★★</span><span class="rating-count">(52)</span></div>
+              <div class="prop-price"><span data-price="110">€110</span> <small>/ night</small></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="properties.html" class="btn btn-outline">View all properties →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="features-strip">
+    <div class="container">
+      <div class="strip-title">Everything you need</div>
+      <div class="strip-sub">Designed for seamless travel planning</div>
+      <div class="feat-grid">
+        <div class="feat-box"><div class="feat-icon">📅</div><h3>Instant Booking</h3><p>Reserve now or pay on arrival — flexible options per property</p></div>
+        <div class="feat-box"><div class="feat-icon">🌍</div><h3>Multi-currency</h3><p>View prices in EUR, USD, GBP and more. Switch anytime.</p></div>
+        <div class="feat-box"><div class="feat-icon">⭐</div><h3>Verified Reviews</h3><p>Only real guests who booked through Glospot can leave reviews</p></div>
+        <div class="feat-box"><div class="feat-icon">🔒</div><h3>Secure &amp; Transparent</h3><p>Clear cancellation policies and fully verified property listings</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Reviews ── -->
+  <section class="section" style="background:var(--white);">
+    <div class="container">
+      <div class="sec-title">What guests say</div>
+      <div class="sec-sub">Real reviews from verified stays</div>
+      <div class="rev-grid">
+        <div class="rev-card">
+          <div class="rev-head">
+            <div class="rev-avatar" style="background:var(--navy)">MK</div>
+            <div><div class="rev-name">Maria K.</div><div class="rev-meta">Tirana · Jul 2024</div></div>
+          </div>
+          <span class="stars">★★★★★</span>
+          <p class="rev-text">Booking was so easy and the hotel was exactly as described. The cancellation policy was crystal clear. Will definitely use Glospot again!</p>
+        </div>
+        <div class="rev-card">
+          <div class="rev-head">
+            <div class="rev-avatar" style="background:#1a3a5c">AR</div>
+            <div><div class="rev-name">Alex R.</div><div class="rev-meta">London · Aug 2024</div></div>
+          </div>
+          <span class="stars">★★★★★</span>
+          <p class="rev-text">Loved the pay-on-arrival option. Found a great apartment in Sarandë at a fantastic price. No hidden fees — exactly what was advertised.</p>
+        </div>
+        <div class="rev-card">
+          <div class="rev-head">
+            <div class="rev-avatar" style="background:#2d6a4f">SF</div>
+            <div><div class="rev-name">Sofia F.</div><div class="rev-meta">Rome · Jun 2024</div></div>
+          </div>
+          <span class="stars">★★★★</span>
+          <p class="rev-text">The Italian interface made navigation so easy. All my booking history is visible in my account — super convenient for managing multiple trips.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <div class="cta-banner">
+    <div class="cta-inner">
+      <div>
+        <h2>Ready to explore Albania?</h2>
+        <p>Create a free account to save favourites, manage bookings and get personalised suggestions.</p>
+      </div>
+      <div class="cta-buttons">
+        <a href="account.html" class="btn btn-navy">Create account</a>
+        <a href="properties.html" class="btn btn-outline">Browse properties</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="main.js"></script>
+  <script>
+    /* Default check-in / check-out dates */
+    (function() {
+      var today    = new Date();
+      var checkin  = new Date(); checkin.setDate(today.getDate() + 1);
+      var checkout = new Date(); checkout.setDate(today.getDate() + 4);
+      var fmt = function(d) { return d.toISOString().split('T')[0]; };
+      var ci = document.getElementById('checkin');
+      var co = document.getElementById('checkout');
+      if (ci) { ci.value = fmt(checkin); ci.min = fmt(today); }
+      if (co) { co.value = fmt(checkout); co.min = fmt(checkin); }
+      if (ci) ci.addEventListener('change', function() {
+        if (co && co.value <= ci.value) {
+          var next = new Date(ci.value); next.setDate(next.getDate() + 1);
+          co.value = next.toISOString().split('T')[0];
+        }
+        if (co) co.min = ci.value;
+      });
+    })();
+
+    function setSug(city) {
+      var el = document.getElementById('dest');
+      if (el) el.value = city;
+      el.focus();
+    }
+
+    function doSearch() {
+      var dest     = (document.getElementById('dest').value || '').trim();
+      var checkin  = document.getElementById('checkin').value || '';
+      var checkout = document.getElementById('checkout').value || '';
+      var guests   = document.getElementById('guests').value || '2';
+      if (!dest) { showToast('Please enter a destination', 'error'); return; }
+      var params = new URLSearchParams({ q: dest, checkin: checkin, checkout: checkout, guests: guests });
+      window.location.href = 'properties.html?' + params.toString();
+    }
+
+    function navigate(url) { window.location.href = url; }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var destEl = document.getElementById('dest');
+      if (destEl) destEl.addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
+    });
+  </script>
+</body>
+</html>
